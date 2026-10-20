@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Shield — Token-Bucket Rate Limiter</title>
+  <meta name="description" content="A minimal token-bucket rate limiter dashboard. Configure capacity, send requests, and observe real-time allow/deny decisions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+<!-- ======== Header ======== -->
+<header>
+  <div class="container">
+    <div class="logo">API <span>Shield</span></div>
+    <div class="status-badge">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Checking…</span>
+    </div>
+  </div>
+</header>
+
+<!-- ======== Main ======== -->
+<main>
+  <div class="container">
+
+    <!-- Result banner -->
+    <div id="result-banner" role="status" aria-live="polite">
+      <span class="result-icon" id="result-icon"></span>
+      <div>
+        <div id="result-title"></div>
+        <div class="result-meta" id="result-meta"></div>
+      </div>
+    </div>
+
+    <!-- Top grid: configure | send request -->
+    <div class="grid-2">
+
+      <!-- Configure card -->
+      <div class="card">
+        <div class="card-title">Bucket Configuration</div>
+
+        <div class="field">
+          <label for="capacity">Capacity (tokens)</label>
+          <input type="number" id="capacity" value="10" min="1" step="1" aria-describedby="capacity-err" />
+          <div class="hint error-msg" id="capacity-err" role="alert"></div>
+        </div>
+
+        <div class="field">
+          <label for="refill-rate">Refill rate (tokens / second)</label>
+          <input type="number" id="refill-rate" value="1" min="0.01" step="0.1" aria-describedby="rate-err" />
+          <div class="hint error-msg" id="rate-err" role="alert"></div>
+          <div class="hint">New clients will use these values.</div>
+        </div>
+
+        <button class="btn-primary" id="btn-configure">Apply</button>
+      </div>
+
+      <!-- Send request card -->
+      <div class="card">
+        <div class="card-title">Send Request</div>
+
+        <div class="field">
+          <label for="client-id">Client ID</label>
+          <input type="text" id="client-id" placeholder="e.g. user-123" maxlength="128" aria-describedby="client-err" />
+          <div class="hint error-msg" id="client-err" role="alert"></div>
+        </div>
+
+        <button class="btn-primary" id="btn-send" style="margin-top: 36px;">Send Request</button>
+      </div>
+
+    </div>
+
+    <!-- Token status card -->
+    <div class="card">
+      <div class="card-title">Token Bucket Status</div>
+      <div class="token-bar-wrap">
+        <div class="token-bar-bg" aria-hidden="true">
+          <div class="token-bar-fill" id="token-bar-fill"></div>
+        </div>
+        <span class="token-label" id="token-label">— / —</span>
+      </div>
+      <div class="hint" style="margin-top:8px;">Updated after each request.</div>
+    </div>
+
+    <!-- History card -->
+    <div class="card">
+      <div class="card-title">Recent Requests</div>
+      <div class="history-header">
+        <span>Client</span>
+        <span>Decision</span>
+        <span style="text-align:right">Remaining</span>
+      </div>
+      <div id="history-body">
+        <div class="empty-msg">No requests yet.</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Toast -->
+<div id="toast" role="alert" aria-live="assertive"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
